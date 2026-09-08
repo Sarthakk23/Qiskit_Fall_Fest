@@ -1,0 +1,346 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+@import "tailwindcss";
+
+/* Register a class-based dark variant so `dark:` utilities respond to
+   <html class="dark"> (toggled by ThemeProvider) instead of only the
+   OS-level prefers-color-scheme media query. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================================
+   DESIGN TOKENS — "Quantum Sapphire" theme.
+   Light mode is the primary/default surface and lives at :root;
+   dark mode overrides everything inside `.dark` (added to <html>
+   by ThemeProvider) for anyone who switches over. Because the
+   whole site reads these as CSS variables (not baked-in hex
+   values), toggling the class re-themes every surface at once,
+   and the swap is eased by the `transition` on <body> below.
+   ============================================================ */
+:root {
+  /* base — crisp pearl background, pure white surfaces */
+  --bg: #f8fafc;
+  --bg-1: #eef2ff;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --line: rgba(15, 23, 42, 0.08);
+  --line-bright: rgba(37, 99, 235, 0.15);
+
+  /* accents — Quantum Sapphire Blue / Cyan primary, Deep Violet /
+     Electric Magenta secondary */
+  --blue: #2563eb;
+  --blue-bright: #3b82f6;
+  --cyan: #0891b2;
+  --violet: #7c3aed;
+  --magenta: #c026d3;
+
+  /* text — deep navy headings, slate body */
+  --text: #0f172a;
+  --text-mid: #334155;
+  --text-dim: #64748b;
+
+  /* chrome */
+  --nav-bg: rgba(248, 250, 252, 0.72);
+  --nav-bg-solid: rgba(248, 250, 252, 0.96);
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  --card-blur: 14px;
+
+  color-scheme: light;
+}
+
+.dark {
+  /* base — deep obsidian → midnight, kept for anyone who opts back in */
+  --bg: #07090e;
+  --bg-1: #0f172a;
+  --surface: rgba(255, 255, 255, 0.035);
+  --surface-2: rgba(255, 255, 255, 0.065);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-bright: rgba(37, 99, 235, 0.35);
+
+  /* accents — brightened Sapphire / Cyan / Violet / Magenta for
+     contrast against the dark surface */
+  --blue: #3b82f6;
+  --blue-bright: #60a5fa;
+  --cyan: #22d3ee;
+  --violet: #a78bfa;
+  --magenta: #e879f9;
+
+  /* text */
+  --text: #eaeffb;
+  --text-mid: #97a2ba;
+  --text-dim: #5c6478;
+
+  /* chrome */
+  --nav-bg: rgba(7, 9, 14, 0.72);
+  --nav-bg-solid: rgba(7, 9, 14, 0.96);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  width: 100%;
+  min-height: 100dvh;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+::selection {
+  background: var(--blue);
+  color: #fff;
+}
+
+/* Bolder, tighter type hierarchy for all display headings */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+/* Hide native cursor only for fine-pointer devices once the custom cursor mounts */
+body.has-custom-cursor,
+body.has-custom-cursor * {
+  cursor: none !important;
+}
+
+/* ============================================================
+   SHAPE LANGUAGE — beveled "chip" corners, used everywhere
+   instead of rounded-xl, for a consistent circuit motif
+   ============================================================ */
+.chip {
+  clip-path: polygon(
+    14px 0,
+    100% 0,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    0 100%,
+    0 14px
+  );
+}
+.chip-sm {
+  clip-path: polygon(
+    9px 0,
+    100% 0,
+    100% calc(100% - 9px),
+    calc(100% - 9px) 100%,
+    0 100%,
+    0 9px
+  );
+}
+
+/* ============================================================
+   SURFACES & CONTROLS — glass cards with a subtle sapphire glow
+   that wakes up on hover/focus so every card, button, and badge
+   reads as tactile and "alive".
+   ============================================================ */
+.surface-card {
+  position: relative;
+  background: linear-gradient(180deg, var(--surface), var(--surface-2));
+  border: 1px solid var(--line);
+  backdrop-filter: blur(var(--card-blur));
+  -webkit-backdrop-filter: blur(var(--card-blur));
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition:
+    border-color 0.35s ease,
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s ease,
+    background 0.5s ease;
+}
+.surface-card:hover {
+  border-color: color-mix(in srgb, var(--blue) 45%, var(--line-bright));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--blue) 20%, transparent),
+    0 20px 45px -20px color-mix(in srgb, var(--blue) 45%, transparent),
+    0 0 40px -8px color-mix(in srgb, var(--cyan) 35%, transparent);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--blue), var(--violet));
+  color: #fff;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  transition:
+    background 0.25s ease,
+    box-shadow 0.3s ease,
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow:
+    0 0 0 1px rgba(37, 99, 235, 0.3),
+    0 12px 32px -12px rgba(37, 99, 235, 0.6);
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--blue-bright), var(--cyan));
+  box-shadow:
+    0 0 0 1px rgba(8, 145, 178, 0.5),
+    0 16px 44px -10px rgba(8, 145, 178, 0.55),
+    0 0 30px -4px rgba(124, 58, 237, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  border: 1px solid var(--line-bright);
+  color: var(--text);
+  font-family: var(--font-mono);
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.3s ease,
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-ghost:hover {
+  border-color: var(--blue);
+  background: color-mix(in srgb, var(--blue) 8%, transparent);
+  box-shadow: 0 0 25px -6px color-mix(in srgb, var(--blue) 45%, transparent);
+}
+
+/* Generic glow-on-hover utility for badges/pills/chips that don't
+   already define their own hover treatment inline. */
+.glow-hover {
+  transition:
+    box-shadow 0.3s ease,
+    border-color 0.3s ease,
+    background 0.3s ease,
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glow-hover:hover {
+  border-color: color-mix(in srgb, var(--blue) 55%, transparent);
+  box-shadow: 0 0 25px -4px color-mix(in srgb, var(--blue-bright) 40%, transparent);
+}
+
+/* ============================================================
+   MAGNETIC ELEMENTS
+   Any element with [data-magnetic] (via <MagneticButton>/<MagneticAnchor>)
+   gets its pull driven by the --mx/--my custom properties that
+   useMagneticCursor sets on it every frame. Hover/active feedback is
+   layered on top in pure CSS so it never fights the JS-driven pull for
+   control of `transform`.
+   ============================================================ */
+[data-magnetic] {
+  --mx: 0px;
+  --my: 0px;
+  transform: translate(var(--mx), var(--my));
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.25s ease;
+  will-change: transform;
+}
+[data-magnetic]:hover {
+  transform: translate(var(--mx), var(--my)) translateY(-2px) scale(1.015);
+  filter: brightness(1.05);
+}
+[data-magnetic]:active {
+  transform: translate(var(--mx), var(--my)) scale(0.96);
+  transition-duration: 0.15s;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-magnetic] {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  translate: -50% -50%;
+  background: var(--blue);
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow:
+    0 0 12px 2px color-mix(in srgb, var(--blue) 90%, transparent),
+    0 0 28px 8px color-mix(in srgb, var(--cyan) 35%, transparent);
+  transition:
+    width 0.2s ease,
+    height 0.2s ease,
+    background 0.2s ease;
+}
+.cursor-dot--active {
+  width: 5px;
+  height: 5px;
+  background: var(--violet);
+}
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  translate: -50% -50%;
+  border: 1px solid color-mix(in srgb, var(--blue-bright) 80%, transparent);
+  pointer-events: none;
+  z-index: 9998;
+  transition: border-color 0.2s ease;
+}
+
+/* ============================================================
+   KEYFRAMES — orbiting fallback rings, ambient mesh drift
+   ============================================================ */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+.orbit {
+  animation: spin-slow 24s linear infinite;
+}
+.orbit-reverse {
+  animation: spin-reverse 32s linear infinite;
+}
+
+/* Soft pulse used by the Schedule pill tabs' active-state glow ring */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--blue) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--blue) 0%, transparent);
+  }
+}
+.pulse-glow {
+  animation: pulse-glow 2.4s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit,
+  .orbit-reverse,
+  .pulse-glow {
+    animation: none !important;
+  }
+}
