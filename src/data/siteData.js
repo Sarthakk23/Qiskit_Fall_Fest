@@ -1,7 +1,5 @@
 import { BrainCircuit, FlaskConical, Boxes, Sparkles } from "lucide-react";
 
-export const REGISTER_FORM_URL = "https://forms.gle/replace-with-your-form-link";
-
 // Single source of truth for the fest's dates, organizers, and format —
 // pulled into Hero, Footer, and Registration so the logistics never
 // drift out of sync across the page.
@@ -21,8 +19,8 @@ export const EVENT_INFO = {
 export const NAV_LINKS = [
   { id: "about", label: "About" },
   { id: "skills", label: "Verticals" },
-  { id: "schedule", label: "Schedule" },
   { id: "speakers", label: "Speakers" },
+  { id: "schedule", label: "Schedule" },
   { id: "faq", label: "FAQ" },
 ];
 

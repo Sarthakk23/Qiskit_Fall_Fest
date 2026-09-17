@@ -138,12 +138,16 @@ export default function QuantumBackground() {
       makeFormulas();
     }
 
-    // Physics constants for the fracture/coalesce effect
-    const TRIGGER_RADIUS = 130;
-    const REPULSION = 0.9;
-    const SPRING_K = 0.018;
-    const FRICTION = 0.9;
-    const MAX_DISPLACEMENT = 46;
+    // Physics constants for the fracture/coalesce effect — kept subtle
+    // on purpose: a small trigger radius, a gentle push, a fast spring
+    // back to rest, and a tight cap on how far any glyph can drift, so
+    // the field reads as a quiet ambient disturbance near the cursor
+    // rather than an attention-grabbing scatter.
+    const TRIGGER_RADIUS = 70;
+    const REPULSION = 0.32;
+    const SPRING_K = 0.032;
+    const FRICTION = 0.88;
+    const MAX_DISPLACEMENT = 18;
 
     function step(dt) {
       const { reducedMotion } = themeRef.current;
@@ -215,11 +219,11 @@ export default function QuantumBackground() {
           // slightly and glow a touch brighter, so the scatter reads
           // as an active disruption rather than just a smear.
           const displaced = Math.min(1, Math.hypot(c.dx, c.dy) / MAX_DISPLACEMENT);
-          const alpha = baseAlpha * (1 - displaced * 0.35);
+          const alpha = baseAlpha * (1 - displaced * 0.25);
           ctx.fillStyle = colorFor(f.hue, alpha, isDark);
           if (displaced > 0.05) {
             ctx.shadowColor = colorFor(f.hue, 0.9, isDark);
-            ctx.shadowBlur = 8 * displaced;
+            ctx.shadowBlur = 5 * displaced;
           } else {
             ctx.shadowBlur = 0;
           }

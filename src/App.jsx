@@ -5,17 +5,21 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import About from "./components/About";
 import Skills from "./components/Skills";
-import Schedule from "./components/Schedule";
 import Speakers from "./components/Speakers";
-import Registration from "./components/Registration";
+import Schedule from "./components/Schedule";
 import Faq from "./components/Faq";
+import Registration from "./components/Registration";
 import Footer from "./components/Footer";
 import { ThemeProvider } from "./lib/ThemeContext";
-import { REGISTER_FORM_URL } from "./data/siteData";
 
 export default function App() {
+  // Every "Register Now" button across the site — Navbar, Hero, Footer —
+  // shares this single handler, so the CTA always does one thing:
+  // smooth-scroll down to the live, Supabase-backed form in
+  // <Registration/>. (This used to open a stale Google Form link that
+  // had nothing to do with the actual registration flow.)
   const handleRegister = useCallback(() => {
-    window.open(REGISTER_FORM_URL, "_blank", "noopener,noreferrer");
+    document.getElementById("register")?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
   return (
@@ -29,10 +33,17 @@ export default function App() {
       <Hero onRegister={handleRegister} />
       <About />
       <Skills />
-      <Schedule />
+      {/* Speakers before Schedule: build credibility/excitement about
+          who's involved before asking visitors to commit to the
+          day-by-day logistics — see the note in the chat for the full
+          user-flow rationale. */}
       <Speakers />
-      <Registration />
+      <Schedule />
+      {/* FAQ right before the ask: resolve last-minute doubts
+          immediately before the registration form, instead of after it
+          where a hesitant visitor would have to scroll back up. */}
       <Faq />
+      <Registration />
       <Footer onRegister={handleRegister} />
     </ThemeProvider>
   );

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
+import { ArrowRight, CheckCircle2, Loader2, AlertCircle, ShieldAlert } from "lucide-react";
 import { fadeUp, viewportReveal } from "../lib/motionVariants";
-import { registerAttendee, isSupabaseConfigured } from "../lib/supabaseClient";
+import { registerAttendee, checkEmailExists, isSupabaseConfigured } from "../lib/supabaseClient";
 import { EVENT_INFO } from "../data/siteData";
 
 const EXPERIENCE_LEVELS = [
@@ -22,20 +22,39 @@ const inputClasses =
   "focus:ring-2 focus:ring-cyan-500/20 dark:focus:ring-cyan-400/20";
 
 export default function Registration() {
-  const [form, setForm] = useState({ fullName: "", email: "", teamName: "", experience: "" });
-  const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [form, setForm] = useState({ fullName: "", email: "", phone: "", teamName: "", experience: "" });
+  const [status, setStatus] = useState("idle"); // idle | loading | success | error | duplicate
   const [errorMsg, setErrorMsg] = useState("");
 
   const update = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.fullName.trim() || !form.email.trim()) return;
+    if (!form.fullName.trim() || !form.email.trim() || !form.phone.trim()) return;
 
     setStatus("loading");
     setErrorMsg("");
 
-    const { error } = await registerAttendee(form);
+    // Fast pre-submit check so a returning visitor gets an instant,
+    // friendly "you're already in" instead of only finding out after
+    // the insert bounces off the database's unique constraint.
+    const alreadyRegistered = await checkEmailExists(form.email);
+    if (alreadyRegistered) {
+      setStatus("duplicate");
+      setErrorMsg(`${form.email.trim()} is already registered — check your inbox for your confirmation.`);
+      return;
+    }
+
+    const { error, isDuplicate } = await registerAttendee(form);
+
+    if (isDuplicate) {
+      // Backstop for the rare race (e.g. two tabs submitting at once)
+      // where the pre-check passed but the DB's unique constraint still
+      // caught it on insert.
+      setStatus("duplicate");
+      setErrorMsg(`${form.email.trim()} is already registered — check your inbox for your confirmation.`);
+      return;
+    }
 
     if (error) {
       setStatus("error");
@@ -159,6 +178,22 @@ export default function Registration() {
                     </div>
 
                     <div>
+                      <label htmlFor="phone" className="sr-only">
+                        Phone number
+                      </label>
+                      <input
+                        id="phone"
+                        type="tel"
+                        required
+                        placeholder="Phone number"
+                        value={form.phone}
+                        onChange={update("phone")}
+                        className={inputClasses}
+                        autoComplete="tel"
+                      />
+                    </div>
+
+                    <div>
                       <label htmlFor="teamName" className="sr-only">
                         Team name
                       </label>
@@ -192,15 +227,19 @@ export default function Registration() {
                     </div>
 
                     <AnimatePresence>
-                      {status === "error" && (
+                      {(status === "error" || status === "duplicate") && (
                         <motion.div
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
                           exit={{ opacity: 0, height: 0 }}
                           className="flex items-start gap-2 text-sm overflow-hidden"
-                          style={{ color: "#f87171" }}
+                          style={{ color: status === "duplicate" ? "var(--cyan)" : "#f87171" }}
                         >
-                          <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          {status === "duplicate" ? (
+                            <ShieldAlert className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          ) : (
+                            <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          )}
                           <span>{errorMsg}</span>
                         </motion.div>
                       )}
