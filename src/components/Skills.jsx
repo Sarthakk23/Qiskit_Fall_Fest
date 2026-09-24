@@ -72,7 +72,7 @@ export default function Skills() {
   return (
     <section
       id="skills"
-      className="relative min-h-[100dvh] flex flex-col justify-center py-24 md:py-32 border-t"
+      className="relative lg:min-h-[100dvh] flex flex-col justify-center py-10 md:py-24 lg:py-32 border-t"
       style={{ borderColor: "var(--line)" }}
     >
       <div className="max-w-[1400px] mx-auto px-5 md:px-8">
@@ -81,7 +81,7 @@ export default function Skills() {
           initial="hidden"
           whileInView="show"
           viewport={viewportReveal}
-          className="max-w-[62ch] mb-14"
+          className="max-w-[62ch] mb-8 md:mb-14"
         >
           <span className="text-[11px] tracking-[0.14em]" style={{ fontFamily: "var(--font-mono)", color: "var(--blue)" }}>
             5-DAY HACKATHON

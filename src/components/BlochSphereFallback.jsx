@@ -7,11 +7,14 @@
 export default function BlochSphereFallback({ animate = true }) {
   return (
     <div
-      className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
+      className="absolute inset-0 flex items-center justify-center pointer-events-none select-none [container-type:size]"
       aria-hidden="true"
     >
+      {/* Sized from the container (not the viewport) so the rings stay a
+          true circle inside whatever box the hero gives us — the 300px
+          phone square as much as the full-bleed desktop backdrop. */}
       <div
-        className="relative w-[min(78vw,780px)] h-[min(78vw,780px)] opacity-70"
+        className="relative w-[min(90cqw,90cqh,780px)] h-[min(90cqw,90cqh,780px)] opacity-70"
         style={{ perspective: "1200px" }}
       >
         <div

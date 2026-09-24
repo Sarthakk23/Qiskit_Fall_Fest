@@ -16,6 +16,11 @@ export const EVENT_INFO = {
     "A week-long hybrid quantum festival featuring a 5-day hackathon, expert industry sessions, and researcher poster presentations.",
 };
 
+// External destinations used in more than one place.
+export const LINKS = {
+  quantica: "https://quanticaw.vercel.app/",
+};
+
 export const NAV_LINKS = [
   { id: "about", label: "About" },
   { id: "skills", label: "Verticals" },
@@ -134,7 +139,42 @@ export const SCHEDULE = [
   },
 ];
 
+// Speaker cards. An entry with a `name` renders as a full, featured
+// card (session, mode, socials); entries without one render as the
+// "Speaker to be announced" placeholders.
+//
+// Social hrefs that still contain "..." are treated as placeholders by
+// <Speakers/>: the icon shows dimmed and isn't clickable. Replace the
+// URL with the real profile and it goes live automatically.
 export const SPEAKERS = [
+  {
+    name: "Prof. Bhavna Bose",
+    fullName: "Bhavna Bose Gupta",
+    initials: "BB",
+    role: "Assistant Professor, Dept. of Information Technology",
+    org: "SVKM's NMIMS MPSTME, Mumbai",
+    community: "Faculty Coordinator, MPSTME Quantumania",
+    mode: "Virtual",
+    modeNote: "Live Keynote & Qiskit 101 Seminar",
+    sessionDate: "September 9",
+    session: "Virtual Live Keynote & Qiskit 101 Seminar",
+    researchFocus:
+      "Ph.D. Researcher in Quantum Computing — Quantum Machine Learning (QML), NISQ hardware noise effects, and post-quantum cryptography.",
+    summary:
+      "Ph.D. researcher in Quantum Computing working across Quantum Machine Learning, NISQ-era hardware noise, and post-quantum cryptography — bringing both deep research and hands-on Qiskit fluency to the fest's opening keynote.",
+    topics: ["Quantum Machine Learning", "NISQ Hardware Noise", "Post-Quantum Cryptography", "Qiskit SDK"],
+    badges: [
+      "IBM Qiskit Advocate (Advanced)",
+      "Certified IBM Developer — Quantum Computing",
+      "MoE Innovation Ambassador",
+      "Life Member ISTE · CSI & IEEE Member",
+    ],
+    photo: "bhavna-bose",
+    socials: [
+      { type: "linkedin", label: "Prof. Bhavna Bose on LinkedIn", href: "https://linkedin.com/in/..." },
+      { type: "x", label: "Prof. Bhavna Bose on X", href: "https://x.com/..." },
+    ],
+  },
   { role: "IBM Quantum Researcher", org: "IBM Quantum", focus: "Error correction & fault tolerance", initials: "IQ" },
   { role: "IBM Qiskit Advocate", org: "IBM Quantum", focus: "Open-source Qiskit tooling", initials: "QA" },
   { role: "IBM Systems Engineer", org: "IBM Quantum", focus: "Hardware access & job orchestration", initials: "SE" },

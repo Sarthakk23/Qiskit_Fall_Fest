@@ -344,3 +344,54 @@ body.has-custom-cursor * {
     animation: none !important;
   }
 }
+
+/* ============================================================
+   SPEAKER SPOTLIGHT — frosted dark glass treatment for the flagship
+   keynote card. Replaces the old spinning rainbow conic-gradient
+   border with a calm, static indigo/violet glass panel: a soft
+   gradient hairline border, a gentle ambient halo, and a very slow,
+   low-amplitude "breathe" on the glow so the card reads as premium
+   and alive rather than distracting.
+   ============================================================ */
+.spotlight-frame {
+  position: relative;
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--violet) 8%, var(--surface)),
+    var(--surface) 55%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid color-mix(in srgb, var(--violet) 30%, var(--line-bright));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--violet) 10%, transparent) inset,
+    0 30px 80px -36px color-mix(in srgb, var(--violet) 45%, transparent),
+    0 0 70px -24px color-mix(in srgb, var(--blue) 30%, transparent);
+  transition: border-color 0.5s ease, box-shadow 0.6s ease;
+}
+.spotlight-frame:hover {
+  border-color: color-mix(in srgb, var(--violet) 48%, var(--line-bright));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--violet) 18%, transparent) inset,
+    0 36px 90px -32px color-mix(in srgb, var(--violet) 55%, transparent),
+    0 0 80px -18px color-mix(in srgb, var(--cyan) 30%, transparent);
+}
+
+@keyframes spotlight-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+.spotlight-halo {
+  animation: spotlight-breathe 7s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spotlight-halo {
+    animation: none;
+    opacity: 0.7;
+  }
+}

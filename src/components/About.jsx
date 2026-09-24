@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
-import { NotebookPen, Users2 } from "lucide-react";
+import { NotebookPen, Users2, ArrowUpRight } from "lucide-react";
 import { fadeUp, staggerContainer, viewportReveal } from "../lib/motionVariants";
+import { LINKS } from "../data/siteData";
 
 const PILLARS = [
   {
     title: "Quantica",
+    href: LINKS.quantica,
     body: "The Quantum Computing Society at IIIT-Delhi — a student community building fluency in quantum information through workshops, reading groups, and open-source Qiskit projects.",
   },
   {
@@ -35,11 +37,11 @@ export default function About() {
   return (
     <section
       id="about"
-      className="relative min-h-[100dvh] flex flex-col justify-center py-24 md:py-32 border-t"
+      className="relative lg:min-h-[100dvh] flex flex-col justify-center py-10 md:py-24 lg:py-32 border-t"
       style={{ borderColor: "var(--line)" }}
     >
       <div className="max-w-[1400px] mx-auto px-5 md:px-8">
-        <div className="grid lg:grid-cols-[0.7fr,1.3fr] gap-10 lg:gap-16">
+        <div className="grid lg:grid-cols-[0.7fr,1.3fr] gap-8 lg:gap-16">
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -76,7 +78,19 @@ export default function About() {
                 style={!p.wide ? { borderColor: "var(--line)" } : undefined}
               >
                 <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "var(--font-display)" }}>
-                  {p.title}
+                  {p.href ? (
+                    <a
+                      href={p.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 hover:underline underline-offset-4"
+                    >
+                      {p.title}
+                      <ArrowUpRight className="w-4 h-4" strokeWidth={1.8} style={{ color: "var(--blue)" }} />
+                    </a>
+                  ) : (
+                    p.title
+                  )}
                 </h3>
                 <p
                   className={`text-sm leading-relaxed ${p.wide ? "max-w-[60ch]" : ""}`}
@@ -94,7 +108,7 @@ export default function About() {
           initial="hidden"
           whileInView="show"
           viewport={viewportReveal}
-          className="mt-16 md:mt-20 grid sm:grid-cols-2 gap-5"
+          className="mt-10 md:mt-16 lg:mt-20 grid sm:grid-cols-2 gap-5"
         >
           {HIGHLIGHTS.map((h) => {
             const Icon = h.icon;

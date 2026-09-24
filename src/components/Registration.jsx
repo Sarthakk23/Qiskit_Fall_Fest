@@ -72,13 +72,13 @@ export default function Registration() {
   return (
     <section
       id="register"
-      className="relative min-h-[100dvh] flex flex-col justify-center py-24 md:py-32 border-t"
+      className="relative lg:min-h-[100dvh] flex flex-col justify-center py-10 md:py-24 lg:py-32 border-t"
       style={{ borderColor: "var(--line)" }}
     >
       <div className="max-w-[1400px] mx-auto px-5 md:px-8 w-full">
         <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={viewportReveal}>
           <div
-            className="surface-card chip relative p-8 md:p-14 grid lg:grid-cols-[1.1fr,0.9fr] gap-10 lg:gap-14 items-start overflow-hidden"
+            className="surface-card chip relative p-6 sm:p-8 md:p-14 grid lg:grid-cols-[1.1fr,0.9fr] gap-8 lg:gap-14 items-start overflow-hidden"
             style={{ borderColor: "var(--line-bright)" }}
           >
             <div

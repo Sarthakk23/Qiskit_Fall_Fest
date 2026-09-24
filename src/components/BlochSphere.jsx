@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Stars, Html, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import BlochSphereFallback from "./BlochSphereFallback";
@@ -199,6 +199,54 @@ function AxisLabel({ position, label, color }) {
   );
 }
 
+// Camera framing -----------------------------------------------------
+// The camera looks at the origin from this fixed direction; only the
+// distance is adjusted to fit the canvas.
+const CAMERA_DIRECTION = new THREE.Vector3(3.5, 2.5, 3.5).normalize();
+// Distance used on wide desktop canvases, where the sphere is meant to
+// be a huge, edge-bleeding backdrop.
+const DESKTOP_DISTANCE = Math.hypot(3.5, 2.5, 3.5); // ≈ 5.44
+// Wide → intentionally oversized. At or below this aspect ratio
+// (width / height) the sphere is pulled back to fit completely.
+const FIT_ASPECT_MIN = 1.0;
+const FIT_ASPECT_MAX = 1.6;
+
+/** Keeps the whole sphere visible at any canvas shape.
+ *
+ * The old fixed camera only saw ~2.2 world units of half-height, so a
+ * tall, narrow phone canvas (aspect ≈ 0.5) showed just the middle
+ * ~1 unit of a sphere with radius 2.34 — a few clipped lines. Here we
+ * find the distance at which a sphere of `radius` exactly fits inside
+ * the *narrower* of the horizontal/vertical fields of view, and blend
+ * back to the big desktop framing as the canvas gets wider. */
+function FitCamera({ radius }) {
+  const camera = useThree((s) => s.camera);
+  const controls = useThree((s) => s.controls);
+  const width = useThree((s) => s.size.width);
+  const height = useThree((s) => s.size.height);
+
+  useLayoutEffect(() => {
+    const aspect = width / height;
+    const vHalf = THREE.MathUtils.degToRad(camera.fov / 2);
+    const hHalf = Math.atan(Math.tan(vHalf) * aspect);
+    const limitingHalf = Math.min(vHalf, hHalf);
+    const fitDistance = radius / Math.sin(limitingHalf);
+
+    // 0 = wide desktop framing, 1 = fully fitted
+    const t = THREE.MathUtils.clamp((FIT_ASPECT_MAX - aspect) / (FIT_ASPECT_MAX - FIT_ASPECT_MIN), 0, 1);
+    const distance = THREE.MathUtils.lerp(DESKTOP_DISTANCE, fitDistance, t);
+
+    // Keep the current viewing angle (OrbitControls may already have
+    // rotated the camera); only change how far away it is.
+    if (camera.position.lengthSq() === 0) camera.position.copy(CAMERA_DIRECTION);
+    camera.position.setLength(distance);
+    camera.updateProjectionMatrix();
+    controls?.update?.();
+  }, [camera, controls, width, height, radius]);
+
+  return null;
+}
+
 function Scene({ dark, lowPower }) {
   const cyan = dark ? "#22d3ee" : "#0891b2";
   const violet = dark ? "#a78bfa" : "#7c3aed";
@@ -371,13 +419,16 @@ export default function BlochSphere({ dark = true }) {
         <BlochSphereFallback animate={!reducedMotion} />
       ) : (
         <Canvas
-          dpr={lowPower ? 1 : [1, 2]}
+          dpr={lowPower ? [1, 1.5] : [1, 2]}
           gl={{ antialias: !lowPower, alpha: true, powerPreference: lowPower ? "low-power" : "high-performance" }}
           camera={{ position: [3.5, 2.5, 3.5], fov: 45 }}
           frameloop={visible ? "always" : "never"}
           style={{ background: "transparent" }}
         >
           <Scene dark={dark} lowPower={lowPower} />
+          {/* Sphere + wireframe reach r ≈ 2.34; the full scene also has
+              axis/state labels out at r ≈ 2.7. */}
+          <FitCamera radius={lowPower ? 2.55 : 3.05} />
           <OrbitControls
             enableZoom={false}
             enablePan={false}
@@ -387,8 +438,10 @@ export default function BlochSphere({ dark = true }) {
             enableDamping
             dampingFactor={0.08}
             rotateSpeed={0.6}
-            minDistance={5}
-            maxDistance={9}
+            // Zoom is off; these only clamp the distance FitCamera sets,
+            // so they must stay wider than any distance it can pick.
+            minDistance={3}
+            maxDistance={40}
             makeDefault
           />
         </Canvas>

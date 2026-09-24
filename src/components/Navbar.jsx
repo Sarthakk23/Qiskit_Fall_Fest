@@ -1,10 +1,45 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight, Atom } from "lucide-react";
-import { NAV_LINKS } from "../data/siteData";
+import { Menu, X, ArrowRight } from "lucide-react";
+import { NAV_LINKS, LINKS } from "../data/siteData";
 import { cn } from "../lib/utils";
-import { MagneticButton } from "./Magnetic";
+import { MagneticButton, MagneticAnchor } from "./Magnetic";
 import ThemeToggle from "./ThemeToggle";
+import qffBadge from "../assets/qff-fall-fest-badge.png";
+
+// Co-host / partner marks. CQT's badge links out to the center's own
+// site; Quantica's links to the Quantica microsite (see siteData.js).
+const CQT_URL = "https://cqt.iiitd.ac.in/";
+
+/** Co-host / partner badge — a small logo chip linked out to the
+ * organization. IBM has no logo asset on hand, so it renders as a
+ * clean wordmark in the IBM blue instead of an unlicensed image. */
+function PartnerBadge({ href, label, src, wordmark }) {
+  const content = src ? (
+    <img src={src} alt={label} className="h-5 md:h-6 w-auto object-contain" draggable="false" />
+  ) : (
+    <span
+      className="text-[13px] md:text-sm font-bold tracking-tight"
+      style={{ fontFamily: "var(--font-display)", color: "#0f62fe" }}
+    >
+      {wordmark}
+    </span>
+  );
+
+  const Wrapper = href ? MagneticAnchor : "div";
+  const wrapperProps = href
+    ? { href, target: "_blank", rel: "noopener noreferrer", "aria-label": label, title: label }
+    : { "aria-label": label, title: label };
+
+  return (
+    <Wrapper
+      {...wrapperProps}
+      className="flex items-center justify-center h-7 md:h-8 px-1.5 rounded-lg opacity-80 hover:opacity-100 transition-opacity duration-300"
+    >
+      {content}
+    </Wrapper>
+  );
+}
 
 export default function Navbar({ onRegister }) {
   const [open, setOpen] = useState(false);
@@ -30,13 +65,25 @@ export default function Navbar({ onRegister }) {
           : "bg-transparent"
       )}
     >
-      <div className="max-w-[1400px] mx-auto px-5 md:px-8 h-16 md:h-20 flex items-center justify-between">
-        <MagneticButton onClick={() => go("top")} className="flex items-center gap-2">
-          <Atom className="w-6 h-6" style={{ color: "var(--cyan)" }} strokeWidth={1.6} />
-          <span className="text-[15px] md:text-base tracking-tight font-semibold" style={{ fontFamily: "var(--font-display)" }}>
-            Qiskit Fall Fest
-          </span>
-        </MagneticButton>
+      <div className="max-w-[1400px] mx-auto px-5 md:px-8 h-16 md:h-20 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 md:gap-4 min-w-0">
+          <MagneticButton onClick={() => go("top")} className="flex items-center gap-2.5 shrink-0">
+            <img src={qffBadge} alt="Qiskit Fall Fest 2026" className="w-8 h-8 md:w-9 md:h-9 object-contain" draggable="false" />
+            <span className="text-[15px] md:text-base tracking-tight font-semibold whitespace-nowrap" style={{ fontFamily: "var(--font-display)" }}>
+              Qiskit Fall Fest
+            </span>
+          </MagneticButton>
+
+          {/* Co-host / partner badges — Quantica, CQT, IBM, side by side */}
+          <div
+            className="hidden md:flex items-center gap-1 pl-3 ml-1 border-l"
+            style={{ borderColor: "var(--line)" }}
+          >
+            <PartnerBadge href={LINKS.quantica} label="Quantica" src="/logos/quantica.png" />
+            <PartnerBadge href={CQT_URL} label="CQT, IIIT-Delhi" src="/logos/cqt.png" />
+            <PartnerBadge href="https://www.ibm.com/quantum" label="IBM Quantum" wordmark="IBM" />
+          </div>
+        </div>
 
         <nav className="hidden lg:flex items-center gap-1">
           {NAV_LINKS.map((l) => (
@@ -113,6 +160,12 @@ export default function Navbar({ onRegister }) {
               >
                 Register Now <ArrowRight className="w-4 h-4" />
               </button>
+
+              <div className="flex items-center gap-3 pt-4 mt-1 border-t" style={{ borderColor: "var(--line)" }}>
+                <PartnerBadge href={LINKS.quantica} label="Quantica" src="/logos/quantica.png" />
+                <PartnerBadge href={CQT_URL} label="CQT, IIIT-Delhi" src="/logos/cqt.png" />
+                <PartnerBadge href="https://www.ibm.com/quantum" label="IBM Quantum" wordmark="IBM" />
+              </div>
             </div>
           </motion.div>
         )}
