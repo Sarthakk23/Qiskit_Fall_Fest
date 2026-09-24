@@ -156,7 +156,7 @@ export const SPEAKERS = [
     community: "Faculty Coordinator, MPSTME Quantumania",
     mode: "Virtual",
     modeNote: "Live Keynote & Qiskit 101 Seminar",
-    sessionDate: "September 9",
+    sessionDate: "October 9",
     session: "Virtual Live Keynote & Qiskit 101 Seminar",
     researchFocus:
       "Ph.D. Researcher in Quantum Computing — Quantum Machine Learning (QML), NISQ hardware noise effects, and post-quantum cryptography.",
