@@ -23,13 +23,13 @@ const PILLARS = [
 const HIGHLIGHTS = [
   {
     icon: NotebookPen,
-    title: "Start from zero, notebook in hand",
-    body: "Every participant gets a custom, curated Jupyter Notebook (.ipynb) template that builds up foundational quantum computing concepts from scratch — no prior background assumed.",
+    title: "Start from zero, tutorial in hand",
+    body: "Each hackathon track opens with a ready-made tutorial before its challenge, and Qiskit Quest offers self-paced, auto-graded modules for anyone who'd rather build up the fundamentals solo — no prior background assumed.",
   },
   {
     icon: Users2,
     title: "Built for every level",
-    body: "The fest is designed for absolute beginners taking their first steps into quantum, and for advanced academic researchers pushing on open problems — the same week serves both.",
+    body: "Every track's challenge has three difficulty levels, so absolute beginners taking their first steps into quantum and advanced researchers pushing on open problems can compete side by side, in the same 60–70-person cohort.",
   },
 ];
 

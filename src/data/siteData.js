@@ -1,10 +1,12 @@
-import { BrainCircuit, FlaskConical, Boxes, Sparkles } from "lucide-react";
+import { FlaskConical, TrendingUp, Waves } from "lucide-react";
 
 // Single source of truth for the fest's dates, organizers, and format —
 // pulled into Hero, Footer, and Registration so the logistics never
-// drift out of sync across the page.
+// drift out of sync across the page. Facts below are taken directly
+// from the official Qiskit Fall Fest 2026 proposal.
 export const EVENT_INFO = {
   title: "Qiskit Fall Fest 2026",
+  theme: "A decade of quantum on the cloud",
   dateStart: "Oct 9",
   dateEnd: "Oct 16",
   dateRange: "October 9 – October 16",
@@ -12,8 +14,10 @@ export const EVENT_INFO = {
   organizers: ["Quantica", "CQT", "IBM"],
   organizersLine: "Quantica, CQT, and IBM",
   venue: "IIIT-Delhi Campus + Online",
+  participants: "60–70",
+  teamSize: "2–4",
   subheadline:
-    "A week-long hybrid quantum festival featuring a 5-day hackathon, expert industry sessions, and researcher poster presentations.",
+    "A week-long hybrid quantum festival: online Oct 9–15 with an intro seminar and a 5-day hackathon, then an in-person finale on Oct 16 with poster presentations and awards.",
 };
 
 // External destinations used in more than one place.
@@ -23,119 +27,121 @@ export const LINKS = {
 
 export const NAV_LINKS = [
   { id: "about", label: "About" },
-  { id: "skills", label: "Verticals" },
+  { id: "skills", label: "Tracks" },
   { id: "speakers", label: "Speakers" },
   { id: "schedule", label: "Schedule" },
   { id: "faq", label: "FAQ" },
 ];
 
-// The four hackathon verticals teams choose from during the 5-day build.
+// The three hackathon tracks teams choose from. Each opens with a
+// ready-made tutorial, then a challenge at three difficulty levels, so
+// beginners and advanced students can both compete in the same track.
 export const VERTICALS = [
-  {
-    id: "qml",
-    icon: BrainCircuit,
-    title: "Quantum Machine Learning",
-    tagline: "QML",
-    desc: "Variational classifiers, quantum kernels, and hybrid quantum-classical models — build learning systems that lean on Hilbert space instead of just floating point.",
-    big: true,
-  },
   {
     id: "chemistry",
     icon: FlaskConical,
     title: "Quantum Chemistry",
-    tagline: "Simulation",
-    desc: "Molecular ground-state estimation with VQE and beyond — model the systems classical chemistry solvers can't touch.",
+    tagline: "From Bonds to Qubits",
+    desc: "Compute how a molecule's energy changes as its bond stretches — then do it again using fewer quantum resources.",
   },
   {
-    id: "simulations",
-    icon: Boxes,
-    title: "Quantum Simulations",
-    tagline: "Dynamics",
-    desc: "Simulate physical systems — spin chains, lattice models, quantum walks — directly on quantum circuits.",
+    id: "optimization",
+    icon: TrendingUp,
+    title: "Quantum Optimization",
+    tagline: "Smarter Choices at Scale",
+    desc: "Choose the best set of stocks with a quantum optimization algorithm, then scale the problem up.",
   },
   {
-    id: "wildcard",
-    icon: Sparkles,
-    title: "Wildcard / Open Innovation",
-    tagline: "Anything goes",
-    desc: "Optimization, cryptography, finance, generative art — if you can frame it as a quantum problem, bring it to the table.",
+    id: "simulation",
+    icon: Waves,
+    title: "Quantum Simulation",
+    tagline: "Dynamics Under Noise",
+    desc: "Simulate how a chain of tiny magnets evolves over time, then correct for noise on real hardware.",
   },
 ];
 
-// Full 8-day event arc: an offline opening day, six days of online
-// hacking + daily faculty-led sessions, and an offline finale.
+// The beginner-friendly, non-competitive path that runs alongside the
+// hackathon all week, for students who'd rather work solo than in a team.
+export const QISKIT_QUEST = {
+  title: "Qiskit Quest",
+  desc: "Prefer to go solo? Work through IBM's self-paced, auto-graded modules at your own speed, all week. Complete a set path and earn a certificate — no team, no competition, no pressure.",
+};
+
+// Full 8-day event arc, taken directly from the proposal's programme
+// table: an online opening seminar, an online hackathon window, a
+// judges-only day, and an in-person finale.
 export const SCHEDULE = [
   {
     day: "Day 1",
     date: "Oct 9",
-    mode: "Offline",
-    location: "IIIT-Delhi Campus",
-    title: "Opening Kickoff & Poster Day",
+    mode: "Online",
+    location: "2:00 – 4:00 PM",
+    title: "Quantum & Qiskit 101 Seminar",
     detail:
-      "The fest opens with a keynote from a special guest industry expert at IBM, followed by an offline poster presentation session where academic researchers showcase ongoing quantum work to the community.",
+      "A hands-on intro to Qiskit, including a run on a real IBM quantum computer, led by Prof. Bhavna Bose — followed by the hackathon briefing for all three tracks.",
   },
   {
     day: "Day 2",
     date: "Oct 10",
     mode: "Online",
-    location: "Virtual",
-    title: "Hack Begins: Quantum Machine Learning",
+    location: "10:00 AM kickoff",
+    title: "Hackathon Starts",
     detail:
-      "The 5-day hacking period opens. Faculty and researchers at IIIT-Delhi release the first online session, walking through the Quantum Machine Learning vertical — tools, scope, and technical execution.",
+      "Challenges are released across all three tracks (Quantum Chemistry, Quantum Optimization, Quantum Simulation), along with the tutorials each track builds on.",
   },
   {
     day: "Day 3",
     date: "Oct 11",
     mode: "Online",
     location: "Virtual",
-    title: "Vertical Deep-Dive: Quantum Chemistry",
+    title: "Hackathon + Qiskit Quest",
     detail:
-      "A dedicated session on the Quantum Chemistry vertical, covering molecular simulation techniques and the Qiskit tooling teams will use to build on the theme.",
+      "Teams build on their chosen track; solo participants work through Qiskit Quest's self-paced modules at their own pace.",
   },
   {
     day: "Day 4",
     date: "Oct 12",
     mode: "Online",
     location: "Virtual",
-    title: "Vertical Deep-Dive: Quantum Simulations",
+    title: "Hackathon + Qiskit Quest",
     detail:
-      "Faculty walk through the Quantum Simulations vertical — modeling physical systems on circuits — with worked examples teams can extend for their own projects.",
+      "Teams build on their chosen track; solo participants work through Qiskit Quest's self-paced modules at their own pace.",
   },
   {
     day: "Day 5",
     date: "Oct 13",
     mode: "Online",
     location: "Virtual",
-    title: "Vertical Deep-Dive: Wildcard / Open Innovation",
+    title: "Hackathon + Qiskit Quest",
     detail:
-      "A session on framing open problems — optimization, finance, cryptography, generative work — as quantum circuits, for teams building in the Wildcard vertical.",
+      "Teams build on their chosen track; solo participants work through Qiskit Quest's self-paced modules at their own pace.",
   },
   {
     day: "Day 6",
     date: "Oct 14",
     mode: "Online",
     location: "Virtual",
-    title: "Tooling & Hardware Execution",
+    title: "Final Build Day — Submissions Due",
     detail:
-      "A technical session on the Qiskit Runtime, primitives, and submitting jobs to real IBM Quantum hardware — the execution layer every vertical eventually needs.",
+      "The last day of building. Hackathon submissions close at midnight — get your write-up and notebook in before the deadline.",
   },
   {
     day: "Day 7",
     date: "Oct 15",
     mode: "Online",
-    location: "Virtual",
-    title: "Build Day & Mentor Office Hours",
+    location: "Judges only",
+    title: "Judging",
     detail:
-      "The final push of the hacking period. Mentors from IIIT-Delhi, Quantica, and IBM hold open office hours as teams finish their projects ahead of the finale.",
+      "Faculty judges score every submission against a single 100-point rubric — technical depth, validation, hardware awareness, analysis, and presentation — and pick the top 3 teams per track to present live.",
   },
   {
     day: "Day 8",
     date: "Oct 16",
     mode: "Offline",
-    location: "IIIT-Delhi Campus",
+    location: "IIIT-Delhi Campus, 2:00 – 6:00 PM",
     title: "Grand Finale",
     detail:
-      "Teams return to campus for offline hackathon presentations and project showcases, live judging across all four verticals, and the closing prize distribution.",
+      "Research poster session open to the wider student and researcher community, finalist presentations from all three tracks, and the closing awards.",
   },
 ];
 
@@ -155,9 +161,9 @@ export const SPEAKERS = [
     org: "SVKM's NMIMS MPSTME, Mumbai",
     community: "Faculty Coordinator, MPSTME Quantumania",
     mode: "Virtual",
-    modeNote: "Live Keynote & Qiskit 101 Seminar",
+    modeNote: "Qiskit 101 Seminar & Hackathon Briefing",
     sessionDate: "October 9",
-    session: "Virtual Live Keynote & Qiskit 101 Seminar",
+    session: "Qiskit 101 Seminar & Hackathon Briefing",
     researchFocus:
       "Ph.D. Researcher in Quantum Computing — Quantum Machine Learning (QML), NISQ hardware noise effects, and post-quantum cryptography.",
     summary:
@@ -184,34 +190,58 @@ export const SPEAKERS = [
 export const FAQS = [
   {
     q: "What is Qiskit Fall Fest?",
-    a: "A global series of student-organized quantum computing events supported by IBM Quantum. This edition is hosted by Quantica and CQT at IIIT-Delhi, in partnership with IBM, running October 9–16.",
+    a: "IBM's annual worldwide series of student-run quantum computing events, held every October and November. This edition's theme is \"A decade of quantum on the cloud,\" and it's open to any student — from first-years with no quantum background to researchers.",
   },
   {
     q: "Is the fest online or offline?",
-    a: "Both. Day 1 (opening + poster session) and the Day 8 grand finale are offline on the IIIT-Delhi campus. The 5-day hacking period in between runs online, with daily faculty-led sessions.",
+    a: "Both. Oct 9–15 runs online: the opening seminar, the 5-day hackathon window, and a judges-only day. The Oct 16 grand finale — poster session, finalist presentations, and awards — is in person on campus, 2–6 PM.",
   },
   {
     q: "Do I need prior quantum computing knowledge?",
-    a: "No. Every participant gets a custom, curated Jupyter Notebook template that builds up foundational quantum computing concepts from scratch, before you touch the hackathon verticals.",
+    a: "No. The fest is for absolute beginners and researchers alike. Each hackathon track opens with a ready-made tutorial, and if you'd rather not join a team, Qiskit Quest's self-paced, auto-graded modules build up the fundamentals at your own speed.",
   },
   {
-    q: "Who can participate?",
-    a: "The fest is built for absolute beginners and advanced academic researchers alike — curiosity about quantum computing is the only prerequisite.",
+    q: "Who can participate, and in what team size?",
+    a: "Any student — beginner to researcher. We're planning for about 60–70 participants, in teams of 2 to 4 for the hackathon. If you'd rather work solo, Qiskit Quest doesn't require a team.",
   },
   {
-    q: "What are the hackathon verticals?",
-    a: "Quantum Machine Learning, Quantum Chemistry, Quantum Simulations, and a Wildcard / Open Innovation track for anything else you can frame as a quantum problem.",
+    q: "What are the hackathon tracks?",
+    a: "Quantum Chemistry, Quantum Optimization, and Quantum Simulation. Each track has a tutorial to start and a challenge with three difficulty levels, so beginners and advanced students can both take part in the same track.",
   },
   {
     q: "Will I get access to real IBM quantum hardware?",
-    a: "Yes. During the hacking period, teams can submit jobs to an actual IBM quantum processor as part of the tooling and execution session.",
+    a: "Yes. The Oct 9 seminar includes a run on a real IBM quantum computer, and the Quantum Simulation track's challenge involves correcting for noise on real hardware.",
+  },
+  {
+    q: "How is the hackathon judged?",
+    a: "Faculty judges score every submission on one 100-point rubric covering technical depth, validation, hardware awareness, analysis, and presentation. The top 3 teams per track present live at the Oct 16 finale.",
+  },
+  {
+    q: "Is there a poster session?",
+    a: "Yes — open to any student or researcher at the university with quantum work to show, not just hackathon participants. Abstracts are due Monday, Oct 5, and posters are presented Oct 16, with both a judged prize and a people's-choice prize.",
   },
   {
     q: "Is there a registration fee?",
-    a: "No, the fest is completely free to attend.",
+    a: "No, the fest is completely free. All tools are free to use, and IBM provides free access to real quantum computers.",
+  },
+  {
+    q: "Are there prizes?",
+    a: "Yes — per-track hackathon winners, best poster, and people's choice. Prize amounts are still being finalized.",
   },
   {
     q: "Will certificates be provided?",
-    a: "Yes, all participants who complete the fest receive a certificate co-signed by Quantica, CQT, and IBM.",
+    a: "Everyone who completes a full Qiskit Quest path earns a certificate. There's no competition or prize for Qiskit Quest — it's purely for learning.",
+  },
+  {
+    q: "Can I join or create a team if I already registered as an individual?",
+    a: "Yes! If you initially registered as a solo participant but found teammates later, you can update your status. Simply log back into the portal to either join an existing team using their unique invite code or create a brand-new team of your own.",
+  },
+  {
+    q: "What is the required team size?",
+    a: "You can participate solo, or form a team of 2 to 4 members.",
+  },
+  {
+    q: "How do I invite members to my team?",
+    a: "When you choose \"Create a Team,\" the portal will generate a unique invite code. Share this code with your teammates so they can enter it under the \"Join a Team\" section during their own registration.",
   },
 ];

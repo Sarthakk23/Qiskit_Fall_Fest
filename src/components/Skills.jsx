@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Rocket } from "lucide-react";
 import { fadeUp, staggerContainer, viewportReveal } from "../lib/motionVariants";
-import { VERTICALS } from "../data/siteData";
+import { VERTICALS, QISKIT_QUEST } from "../data/siteData";
 import { MagneticButton } from "./Magnetic";
 
 function VerticalCard({ item, selected, onToggle }) {
@@ -84,14 +85,15 @@ export default function Skills() {
           className="max-w-[62ch] mb-8 md:mb-14"
         >
           <span className="text-[11px] tracking-[0.14em]" style={{ fontFamily: "var(--font-mono)", color: "var(--blue)" }}>
-            5-DAY HACKATHON
+            HACKATHON TRACKS
           </span>
           <h2 className="mt-4 font-bold text-[clamp(1.9rem,3.6vw,3rem)] leading-[1.05] tracking-tight">
-            Pick your vertical.
+            Pick your track.
           </h2>
           <p className="mt-4 text-sm md:text-base" style={{ color: "var(--text-mid)" }}>
-            Tap a card to shortlist it — every team builds one project inside one of these four
-            verticals across the hacking period.
+            Tap a card to shortlist it — every team of 2–4 picks one of these three tracks. Each
+            starts with a ready-made tutorial, then a challenge with three difficulty levels, so
+            beginners and advanced students can both compete.
           </p>
         </motion.div>
 
@@ -100,7 +102,7 @@ export default function Skills() {
           initial="hidden"
           whileInView="show"
           viewport={viewportReveal}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
         >
           {VERTICALS.map((v) => (
             <motion.div
@@ -108,11 +110,39 @@ export default function Skills() {
               variants={fadeUp}
               whileHover={{ y: -6, scale: 1.015 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className={v.big ? "lg:col-span-2" : ""}
             >
               <VerticalCard item={v} selected={selected.has(v.id)} onToggle={() => toggle(v.id)} />
             </motion.div>
           ))}
+        </motion.div>
+
+        {/* Qiskit Quest — the non-competitive, solo alternative to the
+            three team tracks above, per the proposal's beginner path. */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={viewportReveal}
+          className="mt-5 surface-card chip p-6 md:p-7 flex flex-col sm:flex-row sm:items-center gap-4"
+          style={{ borderColor: "var(--line)" }}
+        >
+          <div
+            className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{
+              background: "color-mix(in srgb, var(--violet) 12%, transparent)",
+              border: "1px solid color-mix(in srgb, var(--violet) 50%, transparent)",
+            }}
+          >
+            <Rocket className="w-5 h-5" strokeWidth={1.6} style={{ color: "var(--violet)" }} />
+          </div>
+          <div>
+            <h3 className="text-base md:text-lg font-semibold mb-1" style={{ fontFamily: "var(--font-display)" }}>
+              {QISKIT_QUEST.title} — no team required
+            </h3>
+            <p className="text-sm leading-relaxed" style={{ color: "var(--text-mid)" }}>
+              {QISKIT_QUEST.desc}
+            </p>
+          </div>
         </motion.div>
       </div>
     </section>

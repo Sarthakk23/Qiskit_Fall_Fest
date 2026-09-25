@@ -17,7 +17,7 @@ export default function Hero({ onRegister }) {
   return (
     <section
       id="top"
-      className="relative md:min-h-[100dvh] flex flex-col justify-center pt-20 pb-10 md:pt-24 md:pb-16 overflow-hidden"
+      className="relative min-h-[100dvh] flex flex-col justify-center pt-20 pb-10 md:pt-24 md:pb-16 overflow-hidden"
     >
       {/* Ambient theme-aware backdrop, sits behind the 3D sphere */}
       <div
@@ -29,12 +29,18 @@ export default function Hero({ onRegister }) {
         }}
       />
 
-      {/* Phones: the sphere is its own square block above the copy, so it
-          is always fully visible and never sits behind the text.
-          md and up: it becomes the full-bleed backdrop it was designed
-          to be. Either way it's one canvas — BlochSphere fits its camera
-          to whatever box it is given. */}
-      <div className="relative mx-auto mb-4 w-full max-w-[320px] sm:max-w-[480px] aspect-square md:absolute md:inset-0 md:z-[-10] md:mx-0 md:mb-0 md:max-w-none md:aspect-auto overflow-hidden">
+      {/* Full-bleed backdrop on every breakpoint, phones included: the
+          sphere sits absolutely positioned behind the hero content
+          (negative z-index) so the "Qiskit Fall Fest" heading always
+          layers on top of it, exactly like desktop. Giving the section
+          a real min-h above means there's enough room for the sphere to
+          read as a backdrop on mobile too, instead of being squeezed
+          into a stacked block above the text.
+          pointer-events-none keeps mobile taps from being swallowed by
+          the canvas's own drag-to-orbit handling — the drag/orbit
+          interaction remains available on md+ pointer devices where it
+          doesn't compete with scroll gestures. */}
+      <div className="absolute inset-0 -z-10 pointer-events-none md:pointer-events-auto overflow-hidden">
         <Suspense fallback={<BlochSphereFallback />}>
           <BlochSphere dark={isDark} />
         </Suspense>

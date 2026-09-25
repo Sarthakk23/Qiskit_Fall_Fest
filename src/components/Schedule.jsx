@@ -30,8 +30,8 @@ export default function Schedule() {
             Eight days, one waveform.
           </h2>
           <p className="mt-4 text-sm md:text-base" style={{ color: "var(--text-mid)" }}>
-            Offline on campus to open and close the week, online for the five-day hacking period
-            in between.
+            Online from the opening seminar through judging, then one offline day on campus for
+            the poster session and grand finale.
           </p>
         </motion.div>
 

@@ -14,57 +14,16 @@ import { createClient } from "@supabase/supabase-js";
  * to control what it can actually do. Never put a service_role key here.
  *
  * ============================================================
- * DATABASE SETUP — run this once in the Supabase SQL editor
+ * DATABASE SETUP
  * ============================================================
- *
- *   create table public.registrations (
- *     id uuid primary key default gen_random_uuid(),
- *     full_name text not null,
- *     email text not null,
- *     phone text not null,
- *     team_name text,
- *     experience text,
- *     created_at timestamptz not null default now(),
- *     -- Case-insensitive uniqueness: the actual source of truth that
- *     -- prevents double registrations at the database level, even if
- *     -- two submissions land at the same instant (a client-side check
- *     -- alone can't fully close that race).
- *     constraint registrations_email_unique unique (email)
- *   );
- *
- *   alter table public.registrations enable row level security;
- *
- *   -- The public anon key may INSERT new rows...
- *   create policy "Anyone can register"
- *     on public.registrations for insert
- *     to anon
- *     with check (true);
- *
- *   -- ...but intentionally has NO SELECT policy, so it can't read the
- *   -- list of registrants back. Instead, duplicate-email checks go
- *   -- through a narrow RPC function below that only ever returns a
- *   -- boolean — never any registrant's actual data.
- *
- *   create or replace function public.email_is_registered(p_email text)
- *   returns boolean
- *   language sql
- *   security definer
- *   set search_path = public
- *   as $$
- *     select exists (
- *       select 1 from public.registrations
- *       where email = lower(trim(p_email))
- *     );
- *   $$;
- *
- *   grant execute on function public.email_is_registered(text) to anon;
- *
- * With this in place, registration is guarded twice: the form calls
- * email_is_registered() before submitting (fast, friendly UX), and the
- * `unique` constraint on the email column rejects any duplicate that
- * slips through anyway (e.g. two tabs submitting within the same
- * instant) — registerAttendee() below treats that Postgres error
- * (code 23505) as the same "already registered" case.
+ * Run supabase/migrations/0002_teams.sql once in the Supabase SQL
+ * editor. It creates `profiles`, `teams`, and `team_members`, migrates
+ * any existing rows out of the old `registrations` table, and locks
+ * every new table down behind RLS — the anon key can only reach them
+ * through the three RPC functions this file calls below
+ * (register_individual, create_team, join_team), plus the pre-existing
+ * email_is_registered check. See that file for the full schema and an
+ * organizer export query.
  */
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -86,15 +45,62 @@ export const supabase = isSupabaseConfigured
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
-// Postgres unique_violation error code — thrown by the `registrations_email_unique`
-// constraint if a duplicate somehow reaches the insert despite the pre-check.
-const UNIQUE_VIOLATION = "23505";
+// Postgres error codes the RPC functions raise on purpose, so the UI can
+// tell "you're already registered" apart from "that invite code doesn't
+// exist" apart from "that team is full", instead of one generic failure.
+const ERROR_CODES = {
+  DUPLICATE_EMAIL: "23505",
+  TEAM_NAME_TAKEN: "23514",
+  TEAM_FULL: "P0001",
+  INVITE_NOT_FOUND: "P0002",
+  INVALID_TRACK: "22023",
+  NOT_REGISTERED: "P0003",
+  ALREADY_ON_TEAM: "P0004",
+};
+
+const NOT_CONFIGURED_ERROR = new Error(
+  "Registration isn't connected yet — missing Supabase environment variables."
+);
+
+function classifyError(error) {
+  if (!error) return null;
+  switch (error.code) {
+    case ERROR_CODES.DUPLICATE_EMAIL:
+      return "duplicate-email";
+    case ERROR_CODES.TEAM_NAME_TAKEN:
+      return "team-name-taken";
+    case ERROR_CODES.TEAM_FULL:
+      return "team-full";
+    case ERROR_CODES.INVITE_NOT_FOUND:
+      return "invite-not-found";
+    case ERROR_CODES.INVALID_TRACK:
+      return "invalid-track";
+    case ERROR_CODES.NOT_REGISTERED:
+      return "not-registered";
+    case ERROR_CODES.ALREADY_ON_TEAM:
+      return "already-on-team";
+    default:
+      return "unknown";
+  }
+}
+
+// Postgres/PostgREST functions that write data and RETURN TABLE(...)
+// come back as an array of rows, even for a single row. Chaining
+// `.single()` onto the rpc() call asks PostgREST to instead enforce
+// "exactly one JSON object" via a special Accept header — an extra
+// check that has been known to fail the *response* even though the
+// underlying write already committed. Pulling the first row out of the
+// plain array ourselves avoids that failure mode entirely.
+function firstRow(data) {
+  return Array.isArray(data) ? data[0] ?? null : data;
+}
 
 /**
- * Fast pre-submit check: has this email already registered?
- * Returns a plain boolean. On any unexpected error it fails "open"
- * (returns false) so a Supabase hiccup never blocks a legitimate new
- * registration — the unique constraint on insert is the real backstop.
+ * Fast pre-submit check: has this email already registered (as an
+ * individual or as part of any team)? Returns a plain boolean. On any
+ * unexpected error it fails "open" (returns false) so a Supabase hiccup
+ * never blocks a legitimate new registration — the unique constraint on
+ * insert is the real backstop.
  */
 export async function checkEmailExists(email) {
   if (!supabase) return false;
@@ -112,32 +118,98 @@ export async function checkEmailExists(email) {
 }
 
 /**
- * Insert a registration row. Returns { data, error, isDuplicate } —
- * never throws — so the calling form can render any state without a
- * try/catch. `isDuplicate` is set on a unique-constraint violation so
- * the UI can show "you've already registered" instead of a generic
- * failure message, even in the race-condition case the pre-check missed.
+ * Register as an individual — covers both a plain solo hackathon
+ * registration and the Qiskit Quest self-paced path (there's no
+ * database distinction between the two; Qiskit Quest is just what a
+ * profile with no team does during the hacking period).
  */
-export async function registerAttendee({ fullName, email, phone, teamName, experience }) {
-  if (!supabase) {
-    return {
-      data: null,
-      error: new Error(
-        "Registration isn't connected yet — missing Supabase environment variables."
-      ),
-      isDuplicate: false,
-    };
-  }
+export async function registerIndividual({ fullName, email, phone, experience }) {
+  if (!supabase) return { data: null, error: NOT_CONFIGURED_ERROR, reason: null };
 
-  const { data, error } = await supabase.from("registrations").insert([
-    {
-      full_name: fullName.trim(),
-      email: email.trim().toLowerCase(),
-      phone: phone.trim(),
-      team_name: teamName?.trim() || null,
-      experience: experience || null,
-    },
-  ]);
+  const { data, error } = await supabase.rpc("register_individual", {
+    p_full_name: fullName.trim(),
+    p_email: email.trim().toLowerCase(),
+    p_phone: phone.trim(),
+    p_experience: experience || null,
+  });
 
-  return { data, error, isDuplicate: error?.code === UNIQUE_VIOLATION };
+  if (error) console.error("[supabaseClient] register_individual failed:", error);
+  return { data: firstRow(data), error, reason: classifyError(error) };
+}
+
+/**
+ * Create a team: registers the caller as its leader and returns the
+ * generated team_name/invite_code so the UI can show something the
+ * leader can copy and share with their 1–3 teammates.
+ */
+export async function createTeam({ fullName, email, phone, experience, teamName, track }) {
+  if (!supabase) return { data: null, error: NOT_CONFIGURED_ERROR, reason: null };
+
+  const { data, error } = await supabase.rpc("create_team", {
+    p_full_name: fullName.trim(),
+    p_email: email.trim().toLowerCase(),
+    p_phone: phone.trim(),
+    p_experience: experience || null,
+    p_team_name: teamName.trim(),
+    p_track: track || null,
+  });
+
+  if (error) console.error("[supabaseClient] create_team failed:", error);
+  return { data: firstRow(data), error, reason: classifyError(error) };
+}
+
+/**
+ * Join an existing team by invite code. Fails with reason "team-full"
+ * or "invite-not-found" (checked in the RPC, and backstopped in the DB
+ * by a trigger) so the UI can give a specific, friendly message.
+ */
+export async function joinTeam({ fullName, email, phone, experience, inviteCode }) {
+  if (!supabase) return { data: null, error: NOT_CONFIGURED_ERROR, reason: null };
+
+  const { data, error } = await supabase.rpc("join_team", {
+    p_full_name: fullName.trim(),
+    p_email: email.trim().toLowerCase(),
+    p_phone: phone.trim(),
+    p_experience: experience || null,
+    p_invite_code: inviteCode.trim(),
+  });
+
+  if (error) console.error("[supabaseClient] join_team failed:", error);
+  return { data: firstRow(data), error, reason: classifyError(error) };
+}
+
+/**
+ * Individual → team leader upgrade. For someone who already has a
+ * `profiles` row (registered as an individual earlier) and now wants
+ * to lead a team. Reuses their existing profile instead of trying to
+ * insert a second one — createTeam() would just bounce this off the
+ * email-uniqueness constraint.
+ */
+export async function upgradeToTeamLeader({ email, teamName, track }) {
+  if (!supabase) return { data: null, error: NOT_CONFIGURED_ERROR, reason: null };
+
+  const { data, error } = await supabase.rpc("upgrade_to_team_leader", {
+    p_email: email.trim().toLowerCase(),
+    p_team_name: teamName.trim(),
+    p_track: track || null,
+  });
+
+  if (error) console.error("[supabaseClient] upgrade_to_team_leader failed:", error);
+  return { data: firstRow(data), error, reason: classifyError(error) };
+}
+
+/**
+ * Individual → team member upgrade, by invite code. Same idea as
+ * upgradeToTeamLeader — reuses the existing profile.
+ */
+export async function upgradeJoinTeam({ email, inviteCode }) {
+  if (!supabase) return { data: null, error: NOT_CONFIGURED_ERROR, reason: null };
+
+  const { data, error } = await supabase.rpc("upgrade_join_team", {
+    p_email: email.trim().toLowerCase(),
+    p_invite_code: inviteCode.trim(),
+  });
+
+  if (error) console.error("[supabaseClient] upgrade_join_team failed:", error);
+  return { data: firstRow(data), error, reason: classifyError(error) };
 }
