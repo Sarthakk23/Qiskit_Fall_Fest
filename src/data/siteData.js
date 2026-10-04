@@ -16,8 +16,26 @@ export const EVENT_INFO = {
   venue: "IIIT-Delhi Campus + Online",
   participants: "60–70",
   teamSize: "2–4",
+  prizePool: "₹35,000",
   subheadline:
-    "A week-long hybrid quantum festival: online Oct 9–15 with an intro seminar and a 5-day hackathon, then an in-person finale on Oct 16 with poster presentations and awards.",
+    "A week-long hybrid quantum festival: online Oct 9–15 with an intro seminar and a 5-day hackathon, then an in-person finale on Oct 16 with research poster presentations, finalist presentations, and awards.",
+};
+
+// Prize structure from the proposal's budget: three track winners plus
+// best poster = ₹35,000. A people's-choice prize is also planned for the
+// poster session (amount not specified in the proposal).
+export const PRIZES = [
+  { label: "Track winner", sub: "Quantum Chemistry", amount: "₹10,000" },
+  { label: "Track winner", sub: "Quantum Optimization", amount: "₹10,000" },
+  { label: "Track winner", sub: "Quantum Simulation", amount: "₹10,000" },
+  { label: "Best Poster", sub: "Research poster session", amount: "₹5,000" },
+];
+
+// Participant perks surfaced in About and the schedule.
+export const PERKS = {
+  refreshments: "Snacks and refreshments at the Oct 9 seminar and the Oct 16 grand finale.",
+  goodies: "Goodies for participants, handed out across the fest.",
+  certificates: "Everyone who completes a set Qiskit Quest path earns a certificate.",
 };
 
 // External destinations used in more than one place.
@@ -64,7 +82,7 @@ export const VERTICALS = [
 // hackathon all week, for students who'd rather work solo than in a team.
 export const QISKIT_QUEST = {
   title: "Qiskit Quest",
-  desc: "Prefer to go solo? Work through IBM's self-paced, auto-graded modules at your own speed, all week. Complete a set path and earn a certificate — no team, no competition, no pressure.",
+  desc: "Prefer to go solo? Work through IBM's self-paced, auto-graded modules at your own speed, all week. Everyone who completes a set path earns a certificate — no team, no competition, no prize, no pressure.",
 };
 
 // Full 8-day event arc, taken directly from the proposal's programme
@@ -78,7 +96,7 @@ export const SCHEDULE = [
     location: "2:00 – 4:00 PM",
     title: "Quantum & Qiskit 101 Seminar",
     detail:
-      "A hands-on intro to Qiskit, including a run on a real IBM quantum computer, led by Prof. Bhavna Bose — followed by the hackathon briefing for all three tracks.",
+      "A hands-on intro to Qiskit, including a run on a real IBM quantum computer, led by Prof. Bhavna Bose — followed by the hackathon briefing for all three tracks. Refreshments are provided.",
   },
   {
     day: "Day 2",
@@ -105,7 +123,7 @@ export const SCHEDULE = [
     location: "Virtual",
     title: "Hackathon + Qiskit Quest",
     detail:
-      "Teams build on their chosen track; solo participants work through Qiskit Quest's self-paced modules at their own pace.",
+      "Teams build on their chosen track; solo participants work through Qiskit Quest's self-paced modules at their own pace. Poster abstracts are due today (Mon, Oct 12) for the Oct 16 session.",
   },
   {
     day: "Day 5",
@@ -141,7 +159,7 @@ export const SCHEDULE = [
     location: "IIIT-Delhi Campus, 2:00 – 6:00 PM",
     title: "Grand Finale",
     detail:
-      "Research poster session open to the wider student and researcher community, finalist presentations from all three tracks, and the closing awards.",
+      "Research poster session open to any student or researcher with quantum or quantum-adjacent work, live presentations from the top 3 teams in each track, and the closing awards — including the ₹35,000 prize pool. Refreshments are provided.",
   },
 ];
 
@@ -218,7 +236,7 @@ export const FAQS = [
   },
   {
     q: "Is there a poster session?",
-    a: "Yes — open to any student or researcher at the university with quantum work to show, not just hackathon participants. Abstracts are due Monday, Oct 5, and posters are presented Oct 16, with both a judged prize and a people's-choice prize.",
+    a: "Yes — open to any student or researcher at the university with quantum work to show (quantum-adjacent fields included), not just hackathon participants. Posters should be on quantum or quantum-adjacent fields. Abstracts are due Monday, Oct 12, and posters are presented on Oct 16, with a judged Best Poster prize and a people's-choice prize.",
   },
   {
     q: "Is there a registration fee?",
@@ -226,11 +244,15 @@ export const FAQS = [
   },
   {
     q: "Are there prizes?",
-    a: "Yes — per-track hackathon winners, best poster, and people's choice. Prize amounts are still being finalized.",
+    a: "Yes — a total prize pool of ₹35,000: ₹10,000 for the winner of each of the three hackathon tracks and ₹5,000 for the best poster. The poster session also has a people's-choice prize. Qiskit Quest is non-competitive and has no prize.",
+  },
+  {
+    q: "Will there be refreshments and goodies?",
+    a: "Yes. Snacks and refreshments are provided at the Oct 9 seminar and the Oct 16 grand finale, and participants receive goodies as part of the fest.",
   },
   {
     q: "Will certificates be provided?",
-    a: "Everyone who completes a full Qiskit Quest path earns a certificate. There's no competition or prize for Qiskit Quest — it's purely for learning.",
+    a: "Everyone who completes a set Qiskit Quest path earns a certificate. Qiskit Quest itself has no competition or prize — it's purely for learning.",
   },
   {
     q: "Can I join or create a team if I already registered as an individual?",

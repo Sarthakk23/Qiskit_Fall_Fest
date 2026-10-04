@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Calendar, MapPin } from "lucide-react";
+import { ArrowRight, Calendar, MapPin, Trophy } from "lucide-react";
 import { fadeUp, staggerContainer } from "../lib/motionVariants";
 import { useTheme } from "../lib/ThemeContext";
 import { MagneticButton } from "./Magnetic";
@@ -133,6 +133,12 @@ export default function Hero({ onRegister }) {
             <MapPin className="w-4 h-4" style={{ color: "var(--blue)" }} strokeWidth={1.6} />
             <span className="text-[13px]" style={{ fontFamily: "var(--font-mono)" }}>
               {EVENT_INFO.venue}
+            </span>
+          </div>
+          <div className="flex items-center gap-2" style={{ color: "var(--text-mid)" }}>
+            <Trophy className="w-4 h-4" style={{ color: "var(--blue)" }} strokeWidth={1.6} />
+            <span className="text-[13px]" style={{ fontFamily: "var(--font-mono)" }}>
+              {EVENT_INFO.prizePool} prize pool
             </span>
           </div>
         </motion.div>

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Rocket } from "lucide-react";
+import { Rocket, Trophy } from "lucide-react";
 import { fadeUp, staggerContainer, viewportReveal } from "../lib/motionVariants";
-import { VERTICALS, QISKIT_QUEST } from "../data/siteData";
+import { VERTICALS, QISKIT_QUEST, PRIZES, EVENT_INFO } from "../data/siteData";
 import { MagneticButton } from "./Magnetic";
 
 function VerticalCard({ item, selected, onToggle }) {
@@ -142,6 +142,61 @@ export default function Skills() {
             <p className="text-sm leading-relaxed" style={{ color: "var(--text-mid)" }}>
               {QISKIT_QUEST.desc}
             </p>
+          </div>
+        </motion.div>
+
+        {/* Prize pool — the headline reward for the hackathon + poster session */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={viewportReveal}
+          className="mt-5 surface-card chip relative overflow-hidden p-6 md:p-8 grid lg:grid-cols-[0.8fr,1.2fr] gap-6 lg:gap-10 items-center"
+          style={{ borderColor: "var(--line-bright)" }}
+        >
+          <div
+            className="absolute -top-20 -left-20 w-64 h-64 rounded-full opacity-30 pointer-events-none"
+            style={{ background: "radial-gradient(circle, color-mix(in srgb, var(--blue) 30%, transparent), transparent 70%)" }}
+          />
+          <div className="relative flex items-center gap-4">
+            <div
+              className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{
+                background: "color-mix(in srgb, var(--blue) 12%, transparent)",
+                border: "1px solid color-mix(in srgb, var(--blue) 50%, transparent)",
+              }}
+            >
+              <Trophy className="w-5 h-5" strokeWidth={1.6} style={{ color: "var(--blue)" }} />
+            </div>
+            <div>
+              <span className="text-[11px] tracking-[0.14em]" style={{ fontFamily: "var(--font-mono)", color: "var(--blue)" }}>
+                TOTAL PRIZE POOL
+              </span>
+              <div
+                className="text-3xl md:text-4xl font-bold tracking-tight"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  background: "linear-gradient(90deg, var(--blue), var(--violet))",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
+                {EVENT_INFO.prizePool}
+              </div>
+              <p className="text-[12px] mt-1" style={{ color: "var(--text-dim)" }}>
+                Plus a people's-choice prize at the poster session.
+              </p>
+            </div>
+          </div>
+          <div className="relative grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {PRIZES.map((p) => (
+              <div key={p.sub} className="pl-3 border-l" style={{ borderColor: "var(--line-bright)" }}>
+                <div className="text-lg font-semibold" style={{ fontFamily: "var(--font-display)" }}>{p.amount}</div>
+                <div className="text-[12px] font-medium mt-0.5">{p.label}</div>
+                <div className="text-[11px]" style={{ color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>{p.sub}</div>
+              </div>
+            ))}
           </div>
         </motion.div>
       </div>

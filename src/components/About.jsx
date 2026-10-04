@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { NotebookPen, Users2, ArrowUpRight } from "lucide-react";
+import { NotebookPen, Users2, ArrowUpRight, Coffee, Gift } from "lucide-react";
 import { fadeUp, staggerContainer, viewportReveal } from "../lib/motionVariants";
-import { LINKS } from "../data/siteData";
+import { LINKS, PERKS } from "../data/siteData";
 
 const PILLARS = [
   {
@@ -30,6 +30,16 @@ const HIGHLIGHTS = [
     icon: Users2,
     title: "Built for every level",
     body: "Every track's challenge has three difficulty levels, so absolute beginners taking their first steps into quantum and advanced researchers pushing on open problems can compete side by side, in the same 60–70-person cohort.",
+  },
+  {
+    icon: Coffee,
+    title: "Refreshments on event days",
+    body: PERKS.refreshments,
+  },
+  {
+    icon: Gift,
+    title: "Goodies & certificates",
+    body: "Participants take home goodies from the fest. " + PERKS.certificates,
   },
 ];
 
