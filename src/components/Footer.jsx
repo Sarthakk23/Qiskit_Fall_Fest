@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-import { Mail, Calendar, MapPin, ArrowRight, ArrowUpRight } from "lucide-react";
-import { MagneticButton } from "./Magnetic";
+import { Mail, Calendar, MapPin, ArrowUpRight } from "lucide-react";
+import { MagneticAnchor } from "./Magnetic";
 import useMagneticCursor from "../hooks/useMagneticCursor";
-import { EVENT_INFO, LINKS, NAV_LINKS } from "../data/siteData";
+import { EVENT_INFO, LINKS, NAV_LINKS, ORGANISED_BY } from "../data/siteData";
 import { InstagramIcon, LinkedinIcon } from "./icons";
 import { fadeUp, viewportReveal } from "../lib/motionVariants";
 import qffBadge from "../assets/qff-fall-fest-badge.png";
@@ -92,7 +92,7 @@ function SocialLink({ Icon, href, label }) {
 
 /** Modernized quantum-dark footer: brand + organizer marks, quick nav
  * anchors, event logistics, socials, and a closing CTA/credit bar. */
-export default function Footer({ onRegister }) {
+export default function Footer() {
   const go = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
   return (
@@ -155,11 +155,11 @@ export default function Footer({ onRegister }) {
               ))}
               <li>
                 <button
-                  onClick={() => go("register")}
+                  onClick={() => go("contact")}
                   className="text-sm inline-block hover:text-[color:var(--cyan)] hover:translate-x-1 transition-all duration-200"
                   style={{ color: "var(--text-mid)" }}
                 >
-                  Register
+                  Contact
                 </button>
               </li>
             </ul>
@@ -201,6 +201,9 @@ export default function Footer({ onRegister }) {
             <span className="text-[12px]" style={{ color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
               © 2026 Quantica, IIIT-Delhi. Built for the Qiskit Fall Fest.
             </span>
+            <span className="text-[12px] max-w-[60ch]" style={{ color: "var(--text-mid)" }}>
+              {ORGANISED_BY}
+            </span>
             <span className="text-[11px] flex items-center gap-1.5" style={{ color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
               Part of IBM's global Qiskit Fall Fest series
               <a
@@ -214,12 +217,14 @@ export default function Footer({ onRegister }) {
             </span>
           </div>
 
-          <MagneticButton
-            onClick={onRegister}
-            className="btn-primary chip-sm px-5 py-2.5 text-[13px] inline-flex items-center gap-2"
+          <MagneticAnchor
+            href={LINKS.discord}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary chip-sm min-h-[48px] px-5 py-2.5 text-[13px] inline-flex items-center gap-2"
           >
-            Register Now <ArrowRight className="w-3.5 h-3.5" />
-          </MagneticButton>
+            Join our Discord <ArrowUpRight className="w-3.5 h-3.5" />
+          </MagneticAnchor>
         </div>
       </motion.div>
     </footer>

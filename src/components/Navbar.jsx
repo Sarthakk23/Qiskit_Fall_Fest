@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight } from "lucide-react";
-import { NAV_LINKS, LINKS } from "../data/siteData";
+import { Menu, X, ArrowUpRight } from "lucide-react";
+import { NAV_LINKS, LINKS, REGISTRATION_CLOSED_MESSAGE } from "../data/siteData";
 import { cn } from "../lib/utils";
 import { MagneticButton, MagneticAnchor } from "./Magnetic";
 import ThemeToggle from "./ThemeToggle";
@@ -41,7 +41,7 @@ function PartnerBadge({ href, label, src, wordmark }) {
   );
 }
 
-export default function Navbar({ onRegister }) {
+export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -65,6 +65,16 @@ export default function Navbar({ onRegister }) {
           : "bg-transparent"
       )}
     >
+      {/* Registrations-closed banner. Collapses once the page scrolls. */}
+      {!scrolled && (
+        <div
+          role="status"
+          className="px-4 py-2 text-center text-[12px] md:text-[13px] leading-snug text-white"
+          style={{ background: "linear-gradient(90deg, var(--blue), var(--violet))", fontFamily: "var(--font-mono)" }}
+        >
+          {REGISTRATION_CLOSED_MESSAGE}
+        </div>
+      )}
       <div className="max-w-[1400px] mx-auto px-5 md:px-8 h-16 md:h-20 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 md:gap-4 min-w-0">
           <MagneticButton onClick={() => go("top")} className="flex items-center gap-2.5 shrink-0">
@@ -76,7 +86,7 @@ export default function Navbar({ onRegister }) {
 
           {/* Co-host / partner badges — Quantica, CQT, IBM, side by side */}
           <div
-            className="hidden md:flex items-center gap-1 pl-3 ml-1 border-l"
+            className="hidden xl:flex items-center gap-1 pl-3 ml-1 border-l"
             style={{ borderColor: "var(--line)" }}
           >
             <PartnerBadge href={LINKS.quantica} label="Quantica" src="/logos/quantica.png" />
@@ -92,7 +102,7 @@ export default function Navbar({ onRegister }) {
               onClick={() => go(l.id)}
               whileHover={{ y: -2 }}
               whileTap={{ y: 0, scale: 0.96 }}
-              className="relative px-4 py-2 rounded-full text-sm tracking-wide transition-all duration-300 hover:text-[color:var(--text)]"
+              className="relative px-3 xl:px-4 py-2 rounded-full text-sm tracking-wide whitespace-nowrap transition-all duration-300 hover:text-[color:var(--text)]"
               style={{ color: "var(--text-mid)", fontFamily: "var(--font-mono)" }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = "color-mix(in srgb, var(--cyan) 10%, transparent)";
@@ -110,12 +120,14 @@ export default function Navbar({ onRegister }) {
 
         <div className="hidden lg:flex items-center gap-3">
           <ThemeToggle />
-          <MagneticButton
-            onClick={onRegister}
-            className="btn-primary chip-sm px-5 py-2.5 text-[13px] tracking-wide inline-flex items-center gap-2"
+          <MagneticAnchor
+            href={LINKS.discord}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary chip-sm px-5 py-2.5 text-[13px] tracking-wide whitespace-nowrap inline-flex items-center gap-2"
           >
-            Register Now <ArrowRight className="w-3.5 h-3.5" />
-          </MagneticButton>
+            Join Discord <ArrowUpRight className="w-3.5 h-3.5" />
+          </MagneticAnchor>
         </div>
 
         <div className="lg:hidden flex items-center gap-2">
@@ -151,15 +163,15 @@ export default function Navbar({ onRegister }) {
                   {l.label}
                 </button>
               ))}
-              <button
-                onClick={() => {
-                  setOpen(false);
-                  onRegister();
-                }}
-                className="btn-primary chip-sm px-5 py-3 text-sm inline-flex items-center justify-center gap-2 mt-2"
+              <a
+                href={LINKS.discord}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setOpen(false)}
+                className="btn-primary chip-sm min-h-[52px] px-5 py-3 text-sm inline-flex items-center justify-center gap-2 mt-2"
               >
-                Register Now <ArrowRight className="w-4 h-4" />
-              </button>
+                Join our Discord <ArrowUpRight className="w-4 h-4" />
+              </a>
 
               <div className="flex items-center gap-3 pt-4 mt-1 border-t" style={{ borderColor: "var(--line)" }}>
                 <PartnerBadge href={LINKS.quantica} label="Quantica" src="/logos/quantica.png" />

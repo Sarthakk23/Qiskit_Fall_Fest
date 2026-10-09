@@ -1,23 +1,23 @@
 import { lazy, Suspense } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Calendar, MapPin, Trophy } from "lucide-react";
+import { ArrowUpRight, Calendar, MapPin, Trophy } from "lucide-react";
 import { fadeUp, staggerContainer } from "../lib/motionVariants";
 import { useTheme } from "../lib/ThemeContext";
-import { MagneticButton } from "./Magnetic";
+import { MagneticButton, MagneticAnchor } from "./Magnetic";
 import BlochSphereFallback from "./BlochSphereFallback";
-import { EVENT_INFO } from "../data/siteData";
+import { EVENT_INFO, LINKS } from "../data/siteData";
 
 // The three.js scene is its own chunk — the hero's text and CTAs render
 // immediately, and the sphere fades in as soon as it's ready.
 const BlochSphere = lazy(() => import("./BlochSphere"));
 
-export default function Hero({ onRegister }) {
+export default function Hero() {
   const { isDark } = useTheme();
 
   return (
     <section
       id="top"
-      className="relative min-h-[100dvh] flex flex-col justify-center pt-20 pb-10 md:pt-24 md:pb-16 overflow-hidden"
+      className="relative min-h-[100dvh] flex flex-col justify-center pt-32 pb-10 md:pt-36 md:pb-16 overflow-hidden"
     >
       {/* Ambient theme-aware backdrop, sits behind the 3D sphere */}
       <div
@@ -104,21 +104,23 @@ export default function Hero({ onRegister }) {
           className="mt-7 text-base md:text-lg max-w-[54ch] leading-relaxed"
           style={{ color: "var(--text-mid)" }}
         >
-          {EVENT_INFO.subheadline} Organized by {EVENT_INFO.organizersLine}. Free · Open to everyone.
+          {EVENT_INFO.subheadline} Organized by {EVENT_INFO.organizersLine}. Free to attend.
         </motion.p>
 
         <motion.div variants={fadeUp} className="mt-9 flex flex-wrap items-center justify-center gap-4">
-          <MagneticButton
-            onClick={onRegister}
-            className="btn-primary chip px-8 py-4 text-sm inline-flex items-center gap-2"
+          <MagneticAnchor
+            href={LINKS.discord}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary chip min-h-[52px] px-8 py-4 text-sm inline-flex items-center gap-2"
           >
-            Register Now <ArrowRight className="w-4 h-4" />
-          </MagneticButton>
+            Join our Discord <ArrowUpRight className="w-4 h-4" />
+          </MagneticAnchor>
           <MagneticButton
-            onClick={() => document.getElementById("schedule")?.scrollIntoView({ behavior: "smooth" })}
-            className="btn-ghost chip px-8 py-4 text-sm"
+            onClick={() => document.getElementById("participants")?.scrollIntoView({ behavior: "smooth" })}
+            className="btn-ghost chip min-h-[52px] px-8 py-4 text-sm"
           >
-            View Schedule
+            For Participants
           </MagneticButton>
         </motion.div>
 

@@ -41,9 +41,79 @@ export const PERKS = {
 // External destinations used in more than one place.
 export const LINKS = {
   quantica: "https://quanticaw.vercel.app/",
+  discord: "https://discord.gg/28X9nTNEw",
+  teamForm: "https://forms.gle/XA3q4gd81WRTVtxr5",
 };
 
+// Registrations are closed. The site now serves registered participants.
+export const REGISTRATION_CLOSED_MESSAGE =
+  "Registrations are now closed. Thank you for the overwhelming response!";
+
+// Team matching form deadline: Saturday 10 Oct 2026, 12:00 noon IST.
+// <Participants/> swaps the form link for a "closed" message after this.
+export const TEAM_FORM_DEADLINE = "2026-10-10T12:00:00+05:30";
+export const TEAM_FORM_DEADLINE_LABEL = "Saturday, 10 Oct, 12:00 noon IST";
+
+// Shown at the bottom of the "For Participants" section. Update it
+// whenever that section changes.
+export const PARTICIPANTS_LAST_UPDATED = "9 October 2026";
+
+// Contact email is not confirmed yet. Keep the placeholder visible until
+// the official address is supplied.
+// TODO: replace with the official Quantica email.
+export const CONTACT_EMAIL_PLACEHOLDER = "quantica@iiitd.ac.in";
+
+// Venue for the 16 Oct finale is not confirmed yet.
+// TODO: replace with the venue once announced.
+export const FINALE_VENUE_PLACEHOLDER = "[TO BE ANNOUNCED]";
+  
+export const ORGANISED_BY =
+  "Organised by Quantica IIITD, the Quantum Computing Society of IIIT Delhi, and the student body of CQT.";
+
+// Compact schedule for registered participants (all times IST).
+export const PARTICIPANT_SCHEDULE = [
+  {
+    date: "Fri, 9 Oct",
+    time: "2:00 – 4:00 PM",
+    mode: "Online",
+    title: "Quantum and Qiskit 101 Seminar and hackathon briefing",
+  },
+  {
+    date: "Sat, 10 Oct",
+    time: "10:00 AM",
+    mode: "Online",
+    title: "Hackathon kickoff, challenges and tutorials released",
+  },
+  {
+    date: "11 – 14 Oct",
+    time: "Submissions close at midnight on 14 Oct",
+    mode: "Online",
+    title: "Hackathon and Qiskit Quest continue",
+  },
+  {
+    date: "Thu, 15 Oct",
+    time: "",
+    mode: "",
+    title: "Judging and selection of finalists",
+  },
+  {
+    date: "Fri, 16 Oct",
+    time: "2:00 – 6:00 PM",
+    mode: "In person at IIIT Delhi",
+    title: "Research poster session, finalist presentations and awards",
+    venue: true,
+  },
+];
+
+export const GETTING_STARTED = [
+  "Join the Discord server",
+  "Create a free IBM Quantum account to run programs on real quantum hardware",
+  "Keep a laptop with a stable internet connection ready",
+  "Form a team of 2 to 4 (or work solo in Qiskit Quest)",
+];
+
 export const NAV_LINKS = [
+  { id: "participants", label: "For Participants" },
   { id: "about", label: "About" },
   { id: "skills", label: "Tracks" },
   { id: "speakers", label: "Speakers" },
@@ -156,10 +226,10 @@ export const SCHEDULE = [
     day: "Day 8",
     date: "Oct 16",
     mode: "Offline",
-    location: "IIIT-Delhi Campus, 2:00 – 6:00 PM",
+    location: "IIIT-Delhi, 2:00 – 6:00 PM",
     title: "Grand Finale",
     detail:
-      "Research poster session open to any student or researcher with quantum or quantum-adjacent work, live presentations from the top 3 teams in each track, and the closing awards — including the ₹35,000 prize pool. Refreshments are provided.",
+      "Research poster session open to any student or researcher with quantum or quantum-adjacent work, live presentations from the top 3 teams in each track, and the closing awards — including the ₹35,000 prize pool. Refreshments are provided. Venue: [TO BE ANNOUNCED].",
   },
 ];
 
@@ -207,24 +277,42 @@ export const SPEAKERS = [
 
 export const FAQS = [
   {
+    q: "Is it free?",
+    a: "Yes. All tools are free, and IBM provides free access to real quantum hardware.",
+  },
+  {
+    q: "Do I need quantum experience?",
+    a: "No. Each hackathon track opens with a ready-made tutorial, and Qiskit Quest's self-paced modules build up the basics.",
+  },
+  {
+    q: "What if I did not get the emails?",
+    a: "Check your spam folder first, then message us on Discord.",
+  },
+  {
+    q: "How do I change my registered email?",
+    a: "Message us on Discord or reply to the email.",
+  },
+  {
+    // TODO: confirm the certificate policy for hackathon participation
+    // (not just Qiskit Quest) before adding anything about it here.
+    q: "Will I get a certificate?",
+    a: "Yes, for completing the Qiskit Quest path.",
+  },
+  {
     q: "What is Qiskit Fall Fest?",
-    a: "IBM's annual worldwide series of student-run quantum computing events, held every October and November. This edition's theme is \"A decade of quantum on the cloud,\" and it's open to any student — from first-years with no quantum background to researchers.",
+    a: "IBM's annual worldwide series of student-run quantum events. This edition's theme is \"A decade of quantum on the cloud.\"",
   },
   {
     q: "Is the fest online or offline?",
-    a: "Both. Oct 9–15 runs online: the opening seminar, the 5-day hackathon window, and a judges-only day. The Oct 16 grand finale — poster session, finalist presentations, and awards — is in person on campus, 2–6 PM.",
-  },
-  {
-    q: "Do I need prior quantum computing knowledge?",
-    a: "No. The fest is for absolute beginners and researchers alike. Each hackathon track opens with a ready-made tutorial, and if you'd rather not join a team, Qiskit Quest's self-paced, auto-graded modules build up the fundamentals at your own speed.",
-  },
-  {
-    q: "Who can participate, and in what team size?",
-    a: "Any student — beginner to researcher. We're planning for about 60–70 participants, in teams of 2 to 4 for the hackathon. If you'd rather work solo, Qiskit Quest doesn't require a team.",
+    a: "Both. Oct 9–15 runs online: the opening seminar, the hackathon window, and judging. The Oct 16 finale (poster session, finalist presentations, and awards) is in person at IIIT Delhi, 2–6 PM. Joining links for online sessions are shared on Discord and by email.",
   },
   {
     q: "What are the hackathon tracks?",
-    a: "Quantum Chemistry, Quantum Optimization, and Quantum Simulation. Each track has a tutorial to start and a challenge with three difficulty levels, so beginners and advanced students can both take part in the same track.",
+    a: "Quantum Chemistry, Quantum Optimization, and Quantum Simulation. Each track has a tutorial to start and a challenge with three difficulty levels, so beginners and advanced students can both take part.",
+  },
+  {
+    q: "What team size can I have?",
+    a: "Teams of 2 to 4 for the hackathon. You can also work solo in Qiskit Quest, which does not need a team.",
   },
   {
     q: "Will I get access to real IBM quantum hardware?",
@@ -236,34 +324,14 @@ export const FAQS = [
   },
   {
     q: "Is there a poster session?",
-    a: "Yes — open to any student or researcher at the university with quantum work to show (quantum-adjacent fields included), not just hackathon participants. Posters should be on quantum or quantum-adjacent fields. Abstracts are due Monday, Oct 12, and posters are presented on Oct 16, with a judged Best Poster prize and a people's-choice prize.",
-  },
-  {
-    q: "Is there a registration fee?",
-    a: "No, the fest is completely free. All tools are free to use, and IBM provides free access to real quantum computers.",
+    a: "Yes. It is open to any student or researcher at the university with quantum work to show. Abstracts were due Monday, Oct 12. Posters are presented on Oct 16, with a judged prize and a people's choice prize.",
   },
   {
     q: "Are there prizes?",
-    a: "Yes — a total prize pool of ₹35,000: ₹10,000 for the winner of each of the three hackathon tracks and ₹5,000 for the best poster. The poster session also has a people's-choice prize. Qiskit Quest is non-competitive and has no prize.",
+    a: "Yes. The total prize pool is ₹35,000: ₹10,000 for the winner of each of the three hackathon tracks and ₹5,000 for the best poster. The poster session also has a people's choice prize. Qiskit Quest is non-competitive and has no prize.",
   },
   {
     q: "Will there be refreshments and goodies?",
-    a: "Yes. Snacks and refreshments are provided at the Oct 9 seminar and the Oct 16 grand finale, and participants receive goodies as part of the fest.",
-  },
-  {
-    q: "Will certificates be provided?",
-    a: "Everyone who completes a set Qiskit Quest path earns a certificate. Qiskit Quest itself has no competition or prize — it's purely for learning.",
-  },
-  {
-    q: "Can I join or create a team if I already registered as an individual?",
-    a: "Yes! If you initially registered as a solo participant but found teammates later, you can update your status. Simply log back into the portal to either join an existing team using their unique invite code or create a brand-new team of your own.",
-  },
-  {
-    q: "What is the required team size?",
-    a: "You can participate solo, or form a team of 2 to 4 members.",
-  },
-  {
-    q: "How do I invite members to my team?",
-    a: "When you choose \"Create a Team,\" the portal will generate a unique invite code. Share this code with your teammates so they can enter it under the \"Join a Team\" section during their own registration.",
+    a: "Yes. Snacks and refreshments are provided at the Oct 9 seminar and the Oct 16 finale, and participants receive goodies as part of the fest.",
   },
 ];

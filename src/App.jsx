@@ -1,37 +1,50 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import CustomCursor from "./components/CustomCursor";
 import QuantumBackground from "./components/QuantumBackground";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import Participants from "./components/Participants";
 import About from "./components/About";
 import Skills from "./components/Skills";
 import Speakers from "./components/Speakers";
 import Schedule from "./components/Schedule";
 import Faq from "./components/Faq";
-import Registration from "./components/Registration";
+import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import SplashScreen from "./components/SplashScreen";
+import RegistrationClosed from "./components/RegistrationClosed";
 import { ThemeProvider } from "./lib/ThemeContext";
 
+// Registrations are closed. Any link that used to open the sign-up flow
+// (/register, #register, or a teammate's old ?join=CODE invite) lands on
+// a friendly "Registrations closed" page instead of the old form.
+function isOldRegistrationUrl() {
+  const { pathname, hash, search } = window.location;
+  return (
+    /^\/register(\/|$)/i.test(pathname) ||
+    /^#register/i.test(hash) ||
+    new URLSearchParams(search).has("join")
+  );
+}
+
 export default function App() {
-  // Every "Register Now" button across the site — Navbar, Hero, Footer —
-  // shares this single handler, so the CTA always does one thing:
-  // smooth-scroll down to the live, Supabase-backed form in
-  // <Registration/>. (This used to open a stale Google Form link that
-  // had nothing to do with the actual registration flow.)
-  const handleRegister = useCallback(() => {
-    document.getElementById("register")?.scrollIntoView({ behavior: "smooth" });
+  const [closedPage, setClosedPage] = useState(isOldRegistrationUrl);
+
+  useEffect(() => {
+    const onChange = () => setClosedPage(isOldRegistrationUrl());
+    window.addEventListener("hashchange", onChange);
+    window.addEventListener("popstate", onChange);
+    return () => {
+      window.removeEventListener("hashchange", onChange);
+      window.removeEventListener("popstate", onChange);
+    };
   }, []);
 
   // One-time entry splash. Locks page scroll while it's up so visitors
   // can't scroll the (already-mounted) site underneath before the fade
-  // finishes. <SplashScreen> itself only decides *when* the hold ends
-  // (onHoldComplete); actually removing it from the tree happens here,
-  // through <AnimatePresence>, so its `exit` variant (scale up, backdrop
-  // blur relaxing to zero, opacity to zero) gets to play out instead of
-  // the component just disappearing.
-  const [showSplash, setShowSplash] = useState(true);
+  // finishes. Skipped on the "Registrations closed" page.
+  const [showSplash, setShowSplash] = useState(() => !isOldRegistrationUrl());
 
   useEffect(() => {
     document.body.style.overflow = showSplash ? "hidden" : "";
@@ -46,26 +59,24 @@ export default function App() {
         {showSplash && <SplashScreen key="splash" onHoldComplete={() => setShowSplash(false)} />}
       </AnimatePresence>
       <CustomCursor />
-      {/* Global quantum-themed backdrop — sits behind every section and
-          coexists with the hero's own Bloch sphere, then continues on
-          as the page-wide background all the way to the footer. */}
       <QuantumBackground />
-      <Navbar onRegister={handleRegister} />
-      <Hero onRegister={handleRegister} />
-      <About />
-      <Skills />
-      {/* Speakers before Schedule: build credibility/excitement about
-          who's involved before asking visitors to commit to the
-          day-by-day logistics — see the note in the chat for the full
-          user-flow rationale. */}
-      <Speakers />
-      <Schedule />
-      {/* FAQ right before the ask: resolve last-minute doubts
-          immediately before the registration form, instead of after it
-          where a hesitant visitor would have to scroll back up. */}
-      <Faq />
-      <Registration />
-      <Footer onRegister={handleRegister} />
+      {closedPage ? (
+        <RegistrationClosed />
+      ) : (
+        <>
+          <Navbar />
+          <Hero />
+          {/* Information for registered participants sits right under the hero. */}
+          <Participants />
+          <About />
+          <Skills />
+          <Speakers />
+          <Schedule />
+          <Faq />
+          <Contact />
+          <Footer />
+        </>
+      )}
     </ThemeProvider>
   );
 }

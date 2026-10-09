@@ -91,7 +91,7 @@ export default function Skills() {
             Pick your track.
           </h2>
           <p className="mt-4 text-sm md:text-base" style={{ color: "var(--text-mid)" }}>
-            Tap a card to shortlist it — every team of 2–4 picks one of these three tracks. Each
+            Every team of 2–4 picks one of these three tracks. Each
             starts with a ready-made tutorial, then a challenge with three difficulty levels, so
             beginners and advanced students can both compete.
           </p>

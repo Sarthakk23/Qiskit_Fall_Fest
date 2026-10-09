@@ -65,9 +65,10 @@ export default function About() {
               Three orgs. One waveform.
             </h2>
             <p className="mt-5 text-sm leading-relaxed max-w-[46ch]" style={{ color: "var(--text-mid)" }}>
-              Qiskit Fall Fest is a global series of student-organized quantum computing events
-              supported by IBM Quantum. This edition pairs that global program with a local
-              goal: give IIIT-Delhi's community a genuine, hands-on week in quantum computing.
+              Qiskit Fall Fest is IBM's annual worldwide series of student-run quantum events.
+              The 2026 theme is “A decade of quantum on the cloud”. This edition pairs that
+              global program with a local goal: give IIIT-Delhi's community a genuine, hands-on
+              week in quantum computing.
             </p>
           </motion.div>
 
